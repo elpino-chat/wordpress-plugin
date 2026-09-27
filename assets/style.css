@@ -1,0 +1,311 @@
+/*
+ * Elpino Chat — admin screen styling.
+ *
+ * A two-column onboarding screen (text + CTA on the left, an illustrated
+ * panel on the right) inside WordPress's normal admin content area — the
+ * sidebar and toolbar stay visible, unlike Crisp's own plugin, which hides
+ * them. Kept as one bordered card rather than a full-bleed overlay so the
+ * rest of wp-admin (navigation, other notices) is never disturbed.
+ */
+
+:root {
+  --elpino-ink: #11120f;
+  --elpino-blue: #3784ff;
+  --elpino-yellow: #ffd84d;
+  --elpino-purple: #7060bd;
+  --elpino-orange: #fc7b33;
+  --elpino-green: #1aa37a;
+  --elpino-pink: #d9508a;
+  --elpino-cream: #fff8ec;
+}
+
+/* ---- the two-column screen itself ----------------------------------- */
+
+/* WordPress's own #wpbody-content padding and the .wrap class's default
+   margin are what leave a gap around this card — zeroed out below, scoped
+   to body.elpino-edge-to-edge (see elpino_admin_body_class() in
+   elpino-chat.php) so no other admin screen is affected. The sidebar and
+   toolbar are untouched; only this page's own content spacing changes. */
+body.elpino-edge-to-edge #wpbody-content {
+  padding: 0 !important;
+}
+
+body.elpino-edge-to-edge .wrap.elpino-wrap {
+  margin: 0 !important;
+}
+
+.elpino-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: calc(100vh - 32px); /* 32px = the admin toolbar's height */
+  background: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--elpino-ink);
+}
+
+.elpino-col-main {
+  flex: 1 1 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px 32px;
+  min-height: 560px;
+}
+
+.elpino-col-art {
+  flex: 1 1 45%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(165deg, #fff8ec 0%, #ffe9b8 55%, #ffd84d 100%);
+}
+
+@media (max-width: 900px) {
+  .elpino-col-art { display: none; }
+  .elpino-col-main { flex: 1 1 100%; }
+}
+
+/* Used only on the "not connected" screen (views/connect.php) — the
+   connected dashboard keeps the default top-aligned, left-aligned layout,
+   since its status pill/action links/disconnect form read better dense
+   than centered. */
+.elpino-col-main--centered {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.elpino-col-main--centered .elpino-logo {
+  position: absolute;
+  top: 28px;
+  left: 32px;
+}
+
+.elpino-col-main--centered .elpino-content {
+  margin-top: 0;
+  text-align: center;
+}
+
+.elpino-logo {
+  display: inline-flex;
+  align-items: center;
+}
+
+.elpino-logo img {
+  height: 30px;
+  width: auto;
+  object-fit: contain;
+}
+
+.elpino-content {
+  max-width: 460px;
+  margin-top: 32px;
+}
+
+.elpino-title {
+  margin: 0 0 14px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.elpino-subtitle {
+  margin: 0 0 32px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(17, 18, 15, 0.62);
+}
+
+/* A plain, wide rectangular button — not a pill — matching the reference
+   layout's single dominant call to action. */
+.elpino-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  height: 52px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15.5px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.elpino-btn:hover {
+  filter: brightness(1.08);
+}
+
+.elpino-btn--primary {
+  background: var(--elpino-blue);
+  color: #fff;
+}
+
+.elpino-btn--danger {
+  background: #fff;
+  color: #b3261e;
+  border: 1px solid #e4b6b0;
+}
+
+.elpino-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--elpino-green);
+  margin-bottom: 20px;
+}
+
+.elpino-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--elpino-green);
+}
+
+.elpino-action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+  margin-bottom: 28px;
+}
+
+.elpino-action-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--elpino-ink);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.elpino-action-link:hover {
+  border-color: var(--elpino-blue);
+  background: #f6f9ff;
+}
+
+.elpino-action-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.elpino-action-title {
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+.elpino-action-desc {
+  font-size: 12.5px;
+  color: rgba(17, 18, 15, 0.5);
+}
+
+.elpino-disconnect-row {
+  margin-top: 6px;
+}
+
+/* ---- the illustrated right panel ------------------------------------ */
+
+.elpino-art-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(17, 18, 15, 0.14) 1.4px, transparent 1.4px);
+  background-size: 22px 22px;
+}
+
+.elpino-art-badge {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--elpino-ink);
+  box-shadow: 10px 10px 0 0 rgba(17, 18, 15, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.elpino-art-badge img {
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+}
+
+.elpino-art-chip {
+  position: absolute;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 2px solid var(--elpino-ink);
+  border-radius: 999px;
+  padding: 7px 14px;
+  background: #fff;
+  white-space: nowrap;
+}
+
+.elpino-art-chip--1 { top: 16%; left: 10%; transform: rotate(-6deg); background: var(--elpino-blue); color: #fff; }
+.elpino-art-chip--2 { top: 22%; right: 8%; transform: rotate(4deg); }
+.elpino-art-chip--3 { bottom: 20%; left: 14%; transform: rotate(3deg); background: var(--elpino-pink); color: #fff; }
+
+.elpino-art-version {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  font-size: 12px;
+  color: rgba(17, 18, 15, 0.4);
+}
+
+/* ---- identity verification (still shown inline on the connected view) */
+
+.elpino-subcard {
+  margin-top: 8px;
+  padding-top: 28px;
+  border-top: 1px solid #eee;
+  max-width: 500px;
+}
+
+.elpino-subcard h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.elpino-subcard p {
+  font-size: 13px;
+  color: rgba(17, 18, 15, 0.55);
+  line-height: 1.6;
+}
+
+.elpino-field-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.elpino-input {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid #d8dde1;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.elpino-input:focus {
+  border-color: var(--elpino-blue);
+  outline: none;
+}
