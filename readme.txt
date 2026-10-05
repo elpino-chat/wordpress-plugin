@@ -1,60 +1,71 @@
 === Elpino Chat ===
 Contributors: elpino
-Tags: live chat, chatbot, ai chat, customer support, helpdesk
+Tags: chat, ai, support, woocommerce, live chat
 Requires at least: 5.8
-Tested up to: 6.8
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Add Elpino's AI-powered live chat widget to your WordPress site in one click. No coding required.
+Add the Elpino AI chat widget to your site, and let it answer WooCommerce order questions.
 
 == Description ==
 
-Elpino Chat connects your WordPress site to your [Elpino](https://elpino.chat) workspace so its AI support agent can answer your visitors instantly, and hand off to your team when it can't.
+Connect your site to Elpino in one click and the chat widget appears on every page. With WooCommerce installed, approve one screen and the AI can look up order status and tracking for verified customers; there are no API keys to copy.
 
-* **One-click connect.** Log in to Elpino, pick or create a site, and the widget is live — no snippets to copy or paste.
-* **AI that answers from your own knowledge.** Elpino only answers from the sources you've given it, and offers a human when it can't.
-* **Identity verification.** Optionally tell Elpino who your logged-in WordPress users are, so the AI can safely look up their own account instead of chatting with them as a stranger.
-* **Your team's inbox, right from wp-admin.** One click through to your Elpino inbox and widget settings.
-
-= How it works =
-
-1. Activate the plugin and click "Connect to Elpino" from its settings page.
-2. Log in to (or sign up for) Elpino, and pick which site you're connecting.
-3. That's it — the chat widget appears on your site immediately.
+This plugin loads a script from Elpino's servers (cdn.elpino.chat) on your public pages, and sends visitors' chat messages to Elpino. See https://elpino.chat/privacy.
 
 == Installation ==
 
-1. Upload the plugin files to `/wp-content/plugins/elpino-chat`, or install it through the WordPress plugins screen directly.
-2. Activate the plugin through the "Plugins" screen.
-3. Go to the new "Elpino Chat" menu item and click "Connect to Elpino".
+1. Upload the plugin and activate it.
+2. Go to Elpino in the admin sidebar and choose Connect to Elpino.
+3. Sign in to Elpino. You'll be returned here with the widget live.
 
-== Frequently Asked Questions ==
+== Signed identity and WooCommerce ==
 
-= Do I need an Elpino account? =
+The plugin works on WordPress with or without WooCommerce. To recognize signed-in users, configure ELPINO_IDENTITY_SECRET in wp-config.php with your workspace secret and enable Identity verification in the Elpino menu. Keep the secret on the server.
 
-Yes — this plugin connects an existing (or brand-new) Elpino workspace to your WordPress site. You can create one for free during the connect step.
-
-= Does this slow down my site? =
-
-The widget loads asynchronously and only after your page has otherwise finished loading, so it doesn't block your site's own render.
-
-= Can I verify who my logged-in customers are? =
-
-Yes. Once connected, an optional "Identity verification" section lets you paste a secret from your Elpino dashboard. Logged-in WordPress visitors are then automatically signed for the AI, by name and email.
-
-= Is my data safe? =
-
-The plugin only ever sends your site's own logged-in users' name/email (only if you turn on identity verification) and the page they're viewing. It never sends anything else about your site or its content.
-
-== Screenshots ==
-
-1. Connect your site in one click.
-2. Manage your connection from wp-admin.
+With WooCommerce installed, use Connect WooCommerce to authorize the store connection. Signed-in customers can access orders belonging to their account ID. Login does not attest email ownership. Guest orders are not exposed through this account lookup. Order actions also require the workspace owner's permission setting.
 
 == Changelog ==
 
+= 1.2.0 =
+* Support signed WooCommerce customer account IDs for store-scoped order lookup.
+* Clarify WordPress and WooCommerce setup and management.
+
+
+= 1.1.2 =
+* Use WordPress script attributes for the enqueued widget loader.
+* Sanitize the connection callback key before validation.
+* Update compatibility metadata for WordPress 7.1.
+
+= 1.1.1 =
+* Show benefits before connection and management controls after connection.
+* Remove extra vertical padding from action buttons.
+
+= 1.1.0 =
+* Simplify the connection dashboard and link directly to widget and inbox settings.
+* Add optional signed WordPress account identity using a server-side secret.
+
+= 1.0.6 =
+* Enlarge the connect button text and show a chat widget preview.
+
+= 1.0.5 =
+* Add a guided setup layout with progress steps and an Elpino inbox preview.
+
+= 1.0.4 =
+* Redesign the connection page with Elpino branding and clear connection status.
+* Preserve the verification nonce in connection links.
+
+= 1.0.3 =
+* Constrain and center the sidebar logo to prevent overflow.
+
+= 1.0.2 =
+* Use the Elpino logo in the admin sidebar.
+
+= 1.0.1 =
+* Give Elpino its own admin sidebar menu with a chat icon.
+
 = 1.0.0 =
-* Initial release: one-click connect, live widget embed, and optional identity verification for logged-in WordPress users.
+* First release.

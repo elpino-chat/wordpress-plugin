@@ -1,83 +1,35 @@
-# Elpino Chat — WordPress plugin
+# Elpino Chat for WordPress and WooCommerce
 
-Connects a WordPress site to [Elpino](https://elpino.chat)'s AI-powered live
-chat: one click to link a workspace, and the widget shows up on the live
-site. Optionally verifies logged-in WordPress users' identity, so the AI can
-look up their own account instead of chatting with them as a stranger.
+Adds the Elpino chat widget to WordPress. WooCommerce stores can connect order support, with signed-in customer account identity.
 
-## Folder layout
+## Install
 
-```
-elpino-chat.php              Bootstrap only: constants, hooks, requires.
-                              No HTML, no business logic — if you're adding
-                              either, it almost certainly belongs elsewhere.
+Download `elpino-chat.zip` from this repository’s GitHub Releases. In WordPress, use Plugins → Add New → Upload Plugin, then activate. Open **Elpino** in the admin sidebar to connect your workspace.
 
-includes/
-  settings-page.php           The "Elpino Chat" admin page: handles the
-                               connect/disconnect callbacks, then includes a
-                               view for the markup.
-  identity.php                Identity verification: the HS256 JWT signer
-                               and the WordPress-user-to-token mapping.
-  widget.php                  Injects the widget (tag.js) and identify()
-                               call on wp_footer, for the live site.
-  cache.php                   Best-effort page-cache-plugin flush after
-                               connecting.
+## Identity
 
-views/
-  connect.php                 "Not connected yet" screen.
-  connected.php                Connected dashboard (Inbox/Settings links,
-                               disconnect).
-  identity-settings.php        The identity verification form.
-
-assets/
-  style.css                    All admin-page styling. Views only ever use
-                               classes from here — no inline styles.
-  icon.png                     Plugin icon (shown on its own settings page
-                               and used for the wordpress.org listing).
-```
-
-## Local development
-
-Point the plugin at a local Elpino dev server instead of production by
-adding this to `wp-config.php`, above the `require_once ABSPATH .
-'wp-settings.php';` line:
+Copy your workspace identity secret from Elpino Settings → Identity Verification. Add it to your server’s `wp-config.php` before the stop-editing line:
 
 ```php
-define('ELPINO_APP_URL', 'http://localhost:3000');
+define('ELPINO_IDENTITY_SECRET', 'your-workspace-identity-secret');
 ```
 
-With that set, the widget loader also automatically falls back to the dev
-server's own `/tag.js` instead of production's CDN (`cdn.elpino.chat`),
-since a site created against a local database wouldn't exist in
-production's.
+Enable identity verification in the Elpino plugin page. Secrets stay on the server. The plugin obtains short-lived signed identities through an authenticated WordPress AJAX endpoint; it does not verify email ownership or request chat OTPs.
 
-## Design notes / why things are the way they are
+## WooCommerce
 
-- **Connect flow is nonce-signed.** The `return_url` handed to
-  `/connect/wordpress` carries a WordPress nonce (`elpino_connect`); the
-  callback in `settings-page.php` refuses to accept `?elpino_website_id=`
-  without it. Prevents an admin being tricked into clicking a crafted link
-  that repoints their widget. Same protection the official Crisp WordPress
-  plugin uses for its own callback.
-- **The disconnect redirect runs on `admin_init`, not inside the page
-  callback.** By the time `elpino_settings_page()` renders, WordPress has
-  already sent the admin page's headers — a real `wp_safe_redirect()` from
-  there would just warn and fail silently.
-- **No Composer dependency for JWT signing.** `identity.php` hand-rolls the
-  HS256 JWT (header/payload/HMAC, base64url) instead of requiring
-  `firebase/php-jwt`, since a WordPress plugin can't assume `composer
-  install` has ever run on the host. It produces the exact same token shape
-  as the Node.js SDK (`web/public/sdk/elpino-server.mjs`).
-- **The widget itself is the same `tag.js` every other Elpino customer
-  embeds** (see `web/app/components/SiteWidgetTag.tsx`), not a bespoke
-  loader — it already handles resizing, the launcher, and visitor identity,
-  so this plugin doesn't carry its own copy to keep in sync.
+Install WooCommerce, connect the store through **Connect WooCommerce**, and enable identity verification. Version 1.2.0 requires the Elpino backend update supporting signed WooCommerce account subjects. Orders are scoped to the signed store URL and customer ID; guest orders require support assistance. Order changes require the workspace owner’s permission setting.
 
-## Publishing to wordpress.org
+## Build the ZIP
 
-Not done yet. Needs: a `languages/` `.pot` file (run `wp i18n make-pot .` or
-similar once there's a working WP-CLI environment), the `assets/` banner and
-screenshot images the *wordpress.org listing* uses (separate from the
-in-plugin `assets/icon.png` above — those live in the SVN `assets/` at the
-repo root, not inside the plugin zip), and a developer account + SVN
-submission through <https://wordpress.org/plugins/developers/add/>.
+```bash
+python3 scripts/build-zip.py
+```
+
+The installable artifact is `dist/elpino-chat.zip`. ZIP files are attached to GitHub Releases rather than committed to source control.
+
+## WordPress.org
+
+Version 1.1.2 was submitted for review. Version 1.2.0 is a separate prerelease pending backend deployment, WooCommerce integration testing, and Plugin Check. Publishing here does not update the WordPress.org submission.
+
+See `readme.txt` for compatibility and release history. License: GPLv2 or later.
